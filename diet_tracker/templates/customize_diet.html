@@ -1,0 +1,581 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h1 class="mb-2 fw-bold gradient-text">Customize Your Diet</h1>
+                <p class="text-muted mb-0 fs-5">Use data-driven suggestions from our food database</p>
+            </div>
+            <a href="{{ url_for('diet_plan') }}" class="btn btn-light btn-hover">
+                <i class="fas fa-arrow-left me-2"></i>Back to Plan
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card custom-card">
+            <div class="card-header custom-card-header">
+                <div class="d-flex align-items-center">
+                    <div class="icon-wrapper bg-primary">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h5 class="mb-0 ms-3">Diet Preferences</h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <form method="post" class="preferences-form">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold">{{ form.meal_frequency.label.text }}</label>
+                        {{ form.meal_frequency(class_='form-select custom-select') }}
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold">{{ form.max_cooking_time.label.text }}</label>
+                                {{ form.max_cooking_time(class_='form-select custom-select') }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold">{{ form.budget_preference.label.text }}</label>
+                                {{ form.budget_preference(class_='form-select custom-select') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold">{{ form.dietary_preference.label.text }}</label>
+                                {{ form.dietary_preference(class_='form-select custom-select') }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label fw-semibold">{{ form.health_conditions.label.text }}</label>
+                                {{ form.health_conditions(class_='form-select custom-select', multiple=True) }}
+                                <small class="form-text text-muted">Hold Ctrl to select multiple</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold">{{ form.cuisine_preference.label.text }}</label>
+                        {{ form.cuisine_preference(class_='form-select custom-select', multiple=True) }}
+                        <small class="form-text text-muted">Hold Ctrl to select multiple options</small>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold">{{ form.spice_level.label.text }}</label>
+                        {{ form.spice_level(class_='form-select custom-select') }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold">{{ form.favorite_foods.label.text }}</label>
+                        {{ form.favorite_foods(class_='form-control custom-input', rows=2, placeholder='List your favorite foods...') }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold">{{ form.excluded_foods.label.text }}</label>
+                        {{ form.excluded_foods(class_='form-control custom-input', rows=2, placeholder='Foods to avoid...') }}
+                    </div>
+
+                    <div class="preference-options mb-4">
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <div class="preference-check">
+                                    {{ form.prefer_snacks(class_='form-check-input') }}
+                                    <label class="form-check-label">{{ form.prefer_snacks.label.text }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="preference-check">
+                                    {{ form.include_smoothies(class_='form-check-input') }}
+                                    <label class="form-check-label">{{ form.include_smoothies.label.text }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="preference-check">
+                                    {{ form.include_juices(class_='form-check-input') }}
+                                    <label class="form-check-label">{{ form.include_juices.label.text }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label fw-semibold">{{ form.special_notes.label.text }}</label>
+                        {{ form.special_notes(class_='form-control custom-input', rows=2, placeholder='Any special requirements...') }}
+                    </div>
+
+                    {{ form.submit(class_='btn btn-primary btn-lg w-100 submit-btn') }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card custom-card mb-4">
+            <div class="card-header custom-card-header">
+                <div class="d-flex align-items-center">
+                    <div class="icon-wrapper bg-success">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h5 class="mb-0 ms-3">AI Food Suggestions</h5>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if suggestions and suggestions|length > 0 %}
+                <div class="table-container">
+                    <table class="table table-hover align-middle suggestion-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Food Item</th>
+                                <th class="text-center">Calories</th>
+                                <th class="text-center">Protein</th>
+                                <th class="text-center">Carbs</th>
+                                <th class="text-center">Fats</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in suggestions %}
+                            <tr class="suggestion-row">
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="food-icon me-3">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                        <span class="fw-medium">{{ item.food_name }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge calorie-badge">{{ item.calories }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="macronutrient protein">{{ '%.1f'|format(item.protein_g) }}g</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="macronutrient carbs">{{ '%.1f'|format(item.carbs_g) }}g</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="macronutrient fats">{{ '%.1f'|format(item.fats_g) }}g</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No suggestions yet</h5>
+                        <p class="text-muted">Adjust your preferences and submit to see personalized food recommendations</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card custom-card">
+            <div class="card-header custom-card-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-wrapper bg-warning">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h5 class="mb-0 ms-3">Suggested Daily Plan</h5>
+                    </div>
+                    {% if sample_plan %}
+                    <span class="target-calories">{{ sample_plan['target'] }} kcal target</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                {% if sample_plan %}
+                <div class="meal-plan">
+                    <div class="row g-3">
+                        {% for it in sample_plan['items'] %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="meal-card">
+                                <div class="meal-header">
+                                    <h6 class="meal-name">{{ it.food_name }}</h6>
+                                    <span class="meal-calories">{{ it.calories }} kcal</span>
+                                </div>
+                                <div class="meal-macros">
+                                    <div class="macro-item">
+                                        <span class="macro-label protein">Protein</span>
+                                        <span class="macro-value">{{ '%.1f'|format(it.protein_g) }}g</span>
+                                    </div>
+                                    <div class="macro-item">
+                                        <span class="macro-label carbs">Carbs</span>
+                                        <span class="macro-value">{{ '%.1f'|format(it.carbs_g) }}g</span>
+                                    </div>
+                                    <div class="macro-item">
+                                        <span class="macro-label fats">Fats</span>
+                                        <span class="macro-value">{{ '%.1f'|format(it.fats_g) }}g</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="plan-totals mt-4">
+                        <div class="total-card">
+                            <div class="total-header">
+                                <h6 class="mb-0">Daily Totals</h6>
+                                <div class="total-values">
+                                    <strong>{{ sample_plan['totals']['calories'] }} kcal</strong>
+                                    <span class="text-muted">P: {{ sample_plan['totals']['protein_g'] }}g · C: {{ sample_plan['totals']['carbs_g'] }}g · F: {{ sample_plan['totals']['fats_g'] }}g</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Plan not generated</h5>
+                        <p class="text-muted">Submit your preferences to generate a personalized daily meal plan</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --warning: #f72585;
+        --info: #7209b7;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .gradient-text {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .custom-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        background: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    .custom-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .custom-card-header {
+        background: var(--gradient);
+        border-bottom: none;
+        padding: 1.5rem 2rem;
+        color: white;
+    }
+
+    .custom-card-header h5 {
+        color: white !important;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .icon-wrapper {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .bg-primary { background: var(--primary-light); }
+    .bg-success { background: var(--success); }
+    .bg-warning { background: var(--warning); }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .custom-select, .custom-input {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+
+    .custom-select:focus, .custom-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .preference-options {
+        background: #f8f9ff;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .preference-check {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        border: 2px solid #f1f3f4;
+        transition: all 0.3s ease;
+    }
+
+    .preference-check:hover {
+        border-color: var(--primary-light);
+        transform: translateY(-2px);
+    }
+
+    .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        margin-top: 0.15em;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .submit-btn {
+        background: var(--gradient);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-hover {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggestion-table {
+        margin: 0;
+    }
+
+    .suggestion-row {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .suggestion-row:hover {
+        background: #f8f9ff;
+        border-left-color: var(--primary);
+        transform: translateX(5px);
+    }
+
+    .food-icon {
+        width: 32px;
+        height: 32px;
+        background: #f0f4ff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+    }
+
+    .calorie-badge {
+        background: var(--warning);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .macronutrient {
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .macronutrient.protein { background: #e3f2fd; color: #1976d2; }
+    .macronutrient.carbs { background: #f3e5f5; color: #7b1fa2; }
+    .macronutrient.fats { background: #fff3e0; color: #f57c00; }
+
+    .meal-card {
+        background: white;
+        border: 2px solid #f1f3f4;
+        border-radius: 16px;
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .meal-card:hover {
+        border-color: var(--primary-light);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .meal-header {
+        display: flex;
+        justify-content: between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .meal-name {
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0;
+        flex: 1;
+    }
+
+    .meal-calories {
+        background: var(--primary);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .meal-macros {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .macro-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        border-radius: 8px;
+        background: #f8f9fa;
+    }
+
+    .macro-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .macro-label.protein { color: #1976d2; }
+    .macro-label.carbs { color: #7b1fa2; }
+    .macro-label.fats { color: #f57c00; }
+
+    .macro-value {
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .total-card {
+        background: var(--gradient);
+        color: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .total-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-header h6 {
+        margin: 0;
+        color: white;
+    }
+
+    .total-values {
+        text-align: right;
+    }
+
+    .total-values strong {
+        font-size: 1.2rem;
+        display: block;
+    }
+
+    .target-calories {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+    }
+
+    .empty-state {
+        opacity: 0.7;
+    }
+
+    .table-container {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .custom-card-header {
+            padding: 1rem 1.5rem;
+        }
+        
+        .meal-header {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .total-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card p-4">
+            <div class="text-center mb-4">
+                <div class="feature-icon icon-success mx-auto">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2 class="gradient-text">Join FitTrack Pro</h2>
+                <p class="text-dark">Start your fitness journey today! 💪</p>
+            </div>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <!-- Account Info -->
+                <div class="mb-4">
+                    <h5 class="gradient-text border-bottom pb-2 mb-3">
+                        <i class="fas fa-user-circle me-2"></i>Account Information
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.username.label(class='form-label fw-medium text-dark') }}
+                            {{ form.username(class='form-control form-control-light', placeholder='Choose a username') }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small">{{ form.username.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.email.label(class='form-label fw-medium text-dark') }}
+                            {{ form.email(class='form-control form-control-light', placeholder='your.email@example.com') }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.password.label(class='form-label fw-medium text-dark') }}
+                            {{ form.password(class='form-control form-control-light', placeholder='Create a strong password') }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small">{{ form.password.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.confirm.label(class='form-label fw-medium text-dark') }}
+                            {{ form.confirm(class='form-control form-control-light', placeholder='Confirm your password') }}
+                            {% if form.confirm.errors %}
+                                <div class="text-danger small">{{ form.confirm.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Physical Stats -->
+                <div class="mb-4">
+                    <h5 class="gradient-text border-bottom pb-2 mb-3">
+                        <i class="fas fa-heartbeat me-2"></i>Physical Stats
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            {{ form.age.label(class='form-label fw-medium text-dark') }}
+                            {{ form.age(class='form-control form-control-light', placeholder='25') }}
+                            {% if form.age.errors %}
+                                <div class="text-danger small">{{ form.age.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {{ form.weight.label(class='form-label fw-medium text-dark') }}
+                            {{ form.weight(class='form-control form-control-light', placeholder='70') }}
+                            {% if form.weight.errors %}
+                                <div class="text-danger small">{{ form.weight.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {{ form.height.label(class='form-label fw-medium text-dark') }}
+                            {{ form.height(class='form-control form-control-light', placeholder='175') }}
+                            {% if form.height.errors %}
+                                <div class="text-danger small">{{ form.height.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            {{ form.gender.label(class='form-label fw-medium text-dark') }}
+                            {{ form.gender(class='form-select form-control-light') }}
+                            {% if form.gender.errors %}
+                                <div class="text-danger small">{{ form.gender.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Level -->
+                <div class="mb-4">
+                    <h5 class="gradient-text border-bottom pb-2 mb-3">
+                        <i class="fas fa-running me-2"></i>Activity Level
+                    </h5>
+                    <div>
+                        {{ form.activity_level.label(class='form-label fw-medium text-dark') }}
+                        {{ form.activity_level(class='form-select form-control-light') }}
+                        {% if form.activity_level.errors %}
+                            <div class="text-danger small">{{ form.activity_level.errors[0] }}</div>
+                        {% endif %}
+                        <small class="text-dark mt-2 d-block">
+                            <i class="fas fa-lightbulb text-warning me-1"></i>
+                            Choose your typical activity level for accurate TDEE calculation.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Fitness Goal -->
+                <div class="mb-4">
+                    <h5 class="gradient-text border-bottom pb-2 mb-3">
+                        <i class="fas fa-bullseye me-2"></i>Fitness Goal
+                    </h5>
+                    <div>
+                        {{ form.goal.label(class='form-label fw-medium text-dark') }}
+                        {{ form.goal(class='form-select form-control-light') }}
+                        {% if form.goal.errors %}
+                            <div class="text-danger small">{{ form.goal.errors[0] }}</div>
+                        {% endif %}
+                        <small class="text-dark mt-2 d-block">
+                            <i class="fas fa-lightbulb text-warning me-1"></i>
+                            Choose your primary fitness goal for personalized recommendations.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    {{ form.submit(class='btn btn-gradient btn-lg') }}
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-dark">Already have an account? 
+                    <a href="{{ url_for('login') }}" class="gradient-text fw-bold text-decoration-none">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Form styling for white background */
+    .form-control-light, .form-select-light {
+        background: #ffffff !important;
+        border: 1px solid #dee2e6 !important;
+        color: #1e293b !important;
+        border-radius: var(--radius);
+        transition: all 0.3s ease;
+    }
+    
+    .form-control-light:focus, .form-select-light:focus {
+        background: #ffffff !important;
+        border-color: #6366f1 !important;
+        color: #1e293b !important;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+    }
+    
+    .form-control-light::placeholder {
+        color: #6b7280 !important;
+    }
+    
+    /* Ensure select dropdowns have white background */
+    .form-select-light option {
+        background: #ffffff;
+        color: #1e293b;
+    }
+    
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .text-dark {
+        color: #1e293b !important;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .icon-success { 
+        background: rgba(16, 185, 129, 0.1); 
+        color: #10b981; 
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+    
+    .border-bottom {
+        border-color: #e5e7eb !important;
+    }
+</style>
+
+<script>
+    // Add light class to form controls
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add light class to all form controls
+        const formControls = document.querySelectorAll('.form-control, .form-select');
+        formControls.forEach(control => {
+            control.classList.add('form-control-light');
+        });
+        
+        // Add form-select-light specifically to select elements
+        const selectElements = document.querySelectorAll('.form-select');
+        selectElements.forEach(select => {
+            select.classList.add('form-select-light');
+        });
+    });
+</script>
+{% endblock %}

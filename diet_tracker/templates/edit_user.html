@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card p-4">
+            <div class="text-center mb-4">
+                <div class="feature-icon icon-primary mx-auto">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <h2 class="gradient-text">Edit User: {{ form.username.data }}</h2>
+                <p class="text-white">Update user information and settings</p>
+            </div>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.username.label(class='form-label fw-medium text-white') }}
+                        {{ form.username(class='form-control form-control-dark', placeholder='Enter username') }}
+                        {% if form.username.errors %}
+                            <div class="text-warning small mt-1">{{ form.username.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.email.label(class='form-label fw-medium text-white') }}
+                        {{ form.email(class='form-control form-control-dark', placeholder='Enter email') }}
+                        {% if form.email.errors %}
+                            <div class="text-warning small mt-1">{{ form.email.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        {{ form.age.label(class='form-label fw-medium text-white') }}
+                        {{ form.age(class='form-control form-control-dark', placeholder='Age') }}
+                        {% if form.age.errors %}
+                            <div class="text-warning small mt-1">{{ form.age.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.weight.label(class='form-label fw-medium text-white') }}
+                        {{ form.weight(class='form-control form-control-dark', placeholder='Weight (kg)') }}
+                        {% if form.weight.errors %}
+                            <div class="text-warning small mt-1">{{ form.weight.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.height.label(class='form-label fw-medium text-white') }}
+                        {{ form.height(class='form-control form-control-dark', placeholder='Height (cm)') }}
+                        {% if form.height.errors %}
+                            <div class="text-warning small mt-1">{{ form.height.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.gender.label(class='form-label fw-medium text-white') }}
+                        {{ form.gender(class='form-select form-control-dark') }}
+                        {% if form.gender.errors %}
+                            <div class="text-warning small mt-1">{{ form.gender.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.activity_level.label(class='form-label fw-medium text-white') }}
+                        {{ form.activity_level(class='form-select form-control-dark') }}
+                        {% if form.activity_level.errors %}
+                            <div class="text-warning small mt-1">{{ form.activity_level.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    {{ form.submit(class='btn btn-gradient btn-lg') }}
+                    <a href="{{ url_for('admin_view_user', user_id=request.view_args.user_id) }}" class="btn btn-outline-light">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- User Stats -->
+        <div class="glass-card p-4 mt-4">
+            <h5 class="gradient-text mb-3"><i class="fas fa-chart-bar me-2"></i>User Statistics</h5>
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        <h4 class="mb-0">{{ user_intakes_count }}</h4>
+                        <small>Total Intakes</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <h4 class="mb-0">{{ user.tdee|int }}</h4>
+                        <small>Current TDEE</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <h4 class="mb-0">{{ user_activity_days }}</h4>
+                        <small>Active Days</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                        <h4 class="mb-0">{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'N/A' }}</h4>
+                        <small>Joined</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Fixed form styling */
+    .form-control-dark, .form-select-dark {
+        background: rgba(30, 41, 59, 0.8) !important;
+        border: 1px solid rgba(99, 102, 241, 0.5) !important;
+        color: white !important;
+        border-radius: var(--radius);
+    }
+    
+    .form-control-dark:focus, .form-select-dark:focus {
+        background: rgba(30, 41, 59, 0.9) !important;
+        border-color: rgba(99, 102, 241, 0.8) !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+    }
+    
+    .form-control-dark::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    .form-label {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    /* Ensure text is visible in form fields */
+    input, select, textarea {
+        color: white !important;
+    }
+    
+    /* Style the dropdown options for better visibility */
+    .form-select-dark option {
+        background: #1e293b;
+        color: white;
+    }
+</style>
+
+<script>
+    // Add dark class to all form controls on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('.form-control, .form-select');
+        formControls.forEach(control => {
+            control.classList.add('form-control-dark');
+        });
+    });
+</script>
+{% endblock %}

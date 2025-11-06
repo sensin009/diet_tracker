@@ -1,0 +1,9 @@
+allergy_type,avoid_foods,alternative_foods,severity
+dairy,"milk,cheese,yogurt,butter,cream,ice_cream,whey_protein","almond_milk,coconut_milk,oat_milk,dairy_free_cheese,plant_protein",high
+nuts,"peanuts,almonds,cashews,walnuts,peanut_butter,almond_milk","sunflower_seeds,pumpkin_seeds,coconut,tahini",high
+gluten,"wheat,bread,pasta,cereals,flour,beer,soy_sauce","rice,quinoa,gluten_free_bread,corn,oats,potatoes",medium
+shellfish,"shrimp,crab,lobster,oysters,clams,mussels","chicken,beef,pork,tofu,beans",high
+eggs,"eggs,mayonnaise,meringue,egg_noodles","flax_eggs,chia_seeds,banana,applesauce",medium
+soy,"soybeans,tofu,soy_milk,edamame,soy_sauce,tempeh","coconut_aminos,regular_milk,almond_products",low
+fish,"salmon,tuna,cod,sardines,fish_oil","chicken,turkey,beans,tofu,eggs",medium
+none,none,all_foods_allowed,none

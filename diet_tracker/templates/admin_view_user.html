@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="gradient-text mb-2">User Details: {{ user.username }}</h1>
+        <p class="text-dark">Complete profile and activity overview</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Users
+        </a>
+    </div>
+</div>
+
+<!-- User Profile Card -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center">
+            <div class="feature-icon icon-primary mx-auto mb-3">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 class="gradient-text">{{ user.username }}</h3>
+            <p class="text-dark">{{ user.email }}</p>
+            
+            <div class="mt-4 d-grid gap-2">
+                <a href="{{ url_for('admin_edit_user', user_id=user.id) }}" class="btn btn-gradient">
+                    <i class="fas fa-edit me-2"></i>Edit User
+                </a>
+                <a href="{{ url_for('admin_export_user_intakes', user_id=user.id) }}" class="btn btn-outline-success">
+                    <i class="fas fa-file-download me-2"></i>Export Intakes
+                </a>
+                <form action="{{ url_for('admin_impersonate', user_id=user.id) }}" method="post" 
+                      onsubmit="return confirm('Impersonate {{ user.username }}?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-outline-warning w-100">
+                        <i class="fas fa-user-secret me-2"></i>Impersonate
+                    </button>
+                </form>
+                <form action="{{ url_for('admin_delete_user', user_id=user.id) }}" method="post" 
+                      onsubmit="return confirm('Delete {{ user.username }} and all intakes? This cannot be undone!');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-outline-danger w-100">
+                        <i class="fas fa-trash me-2"></i>Delete User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <!-- Physical Stats -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="gradient-text mb-3"><i class="fas fa-heartbeat me-2"></i>Physical Stats</h4>
+            <div class="row mt-3">
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center p-3 glass-card">
+                        <div class="feature-icon icon-warning me-3">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 text-dark">Weight</p>
+                            <h4 class="mb-0 gradient-text">{{ user.weight }} kg</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center p-3 glass-card">
+                        <div class="feature-icon icon-success me-3">
+                            <i class="fas fa-ruler-vertical"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 text-dark">Height</p>
+                            <h4 class="mb-0 gradient-text">{{ user.height }} cm</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center p-3 glass-card">
+                        <div class="feature-icon icon-danger me-3">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 text-dark">Age</p>
+                            <h4 class="mb-0 gradient-text">{{ user.age }} years</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center p-3 glass-card">
+                        <div class="feature-icon icon-primary me-3">
+                            <i class="fas fa-{% if user.gender == 'male' %}mars{% else %}venus{% endif %}"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 text-dark">Gender</p>
+                            <h4 class="mb-0 gradient-text text-capitalize">{{ user.gender }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Info -->
+        <div class="glass-card p-4">
+            <h4 class="gradient-text mb-3"><i class="fas fa-fire me-2"></i>Nutrition Information</h4>
+            <div class="row mt-3">
+                <div class="col-md-4 mb-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        <p class="mb-1 text-white">TDEE</p>
+                        <h3 class="text-white">{{ user.tdee|int }}</h3>
+                        <small class="text-white">kcal/day</small>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <p class="mb-1 text-white">Activity Level</p>
+                        <h5 class="text-white text-capitalize">{{ user.activity_level }}</h5>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="stat-card text-center" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <p class="mb-1 text-white">Diet Type</p>
+                        <h5 class="text-white">{{ user.diet_type }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Intake Logs -->
+<div class="glass-card p-4">
+    <h4 class="gradient-text mb-3">
+        <i class="fas fa-clipboard-list me-2"></i>Intake History 
+        <span class="badge bg-primary">{{ intakes|length }} entries</span>
+    </h4>
+    
+    {% if intakes %}
+    <div class="table-responsive mt-3">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr class="glass-card">
+                    <th class="gradient-text"><i class="fas fa-calendar me-2"></i>Date</th>
+                    <th class="gradient-text"><i class="fas fa-fire me-2"></i>Calories</th>
+                    <th class="gradient-text"><i class="fas fa-chart-bar me-2"></i>vs TDEE</th>
+                    <th class="gradient-text text-end"><i class="fas fa-cogs me-2"></i>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in intakes[:15] %}
+                <tr class="glass-card">
+                    <td>
+                        <strong class="text-dark">{{ i.date.strftime('%b %d, %Y') }}</strong><br>
+                        <small class="text-dark">{{ i.date.strftime('%A') }}</small>
+                    </td>
+                    <td>
+                        <span class="h5 fw-bold gradient-text">
+                            {{ i.calories }}
+                        </span> kcal
+                    </td>
+                    <td>
+                        {% set diff = i.calories - user.tdee|int %}
+                        {% if diff > 200 %}
+                            <span class="badge bg-warning text-dark">
+                                +{{ diff|int }} <i class="fas fa-arrow-up"></i>
+                            </span>
+                        {% elif diff < -200 %}
+                            <span class="badge bg-info text-dark">
+                                {{ diff|int }} <i class="fas fa-arrow-down"></i>
+                            </span>
+                        {% else %}
+                            <span class="badge bg-success text-white">
+                                On Target <i class="fas fa-check"></i>
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <form action="{{ url_for('admin_delete_intake', intake_id=i.id) }}" method="post" 
+                              style="display:inline;" onsubmit="return confirm('Delete this intake?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if intakes|length > 15 %}
+    <div class="glass-card mt-3 p-3 text-center" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(99, 102, 241, 0.1));">
+        <i class="fas fa-info-circle text-info me-2"></i>
+        <span class="text-dark">Showing 15 most recent entries out of {{ intakes|length }} total.</span>
+        <a href="{{ url_for('admin_export_user_intakes', user_id=user.id) }}" class="gradient-text fw-bold text-decoration-none ms-1">
+            Export all to CSV
+        </a>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="text-center py-5">
+        <div class="feature-icon icon-warning mx-auto mb-3">
+            <i class="fas fa-clipboard"></i>
+        </div>
+        <h5 class="gradient-text">No Intakes Yet</h5>
+        <p class="text-dark">This user hasn't logged any intakes yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        color: #1e293b !important;
+    }
+    
+    .text-dark {
+        color: #1e293b !important;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .icon-primary { 
+        background: rgba(99, 102, 241, 0.1); 
+        color: #6366f1; 
+    }
+    .icon-warning { 
+        background: rgba(245, 158, 11, 0.1); 
+        color: #f59e0b; 
+    }
+    .icon-success { 
+        background: rgba(16, 185, 129, 0.1); 
+        color: #10b981; 
+    }
+    .icon-danger { 
+        background: rgba(239, 68, 68, 0.1); 
+        color: #ef4444; 
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+    
+    .stat-card {
+        color: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,1015 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        <!-- Left Column - Form -->
+        <div class="col-lg-6">
+            <!-- Main Form Card -->
+            <div class="modern-card form-card">
+                <div class="card-header">
+                    <div class="header-content">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="header-text">
+                            <h2 class="card-title">Log Your Meal</h2>
+                            <p class="card-subtitle">Track your daily nutrition intake</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST" id="intake-form">
+                        {{ form.hidden_tag() }}
+
+                        <!-- Date Input -->
+                        <div class="form-group">
+                            <div class="input-group input-group-modern">
+                                <span class="input-group-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                                <div class="input-content">
+                                    {{ form.date.label(class='form-label') }}
+                                    {{ form.date(class='form-control') }}
+                                </div>
+                            </div>
+                            {% if form.date.errors %}
+                                <div class="error-message">{{ form.date.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Hidden calories field - populated by JavaScript -->
+                        {{ form.calories(class='form-control', type='hidden', id='calories') }}
+
+                        <!-- Food Search -->
+                        <div class="form-group">
+                            <div class="input-group input-group-modern">
+                                <span class="input-group-icon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <div class="input-content">
+                                    <label class="form-label">Search Foods</label>
+                                    <div class="search-container">
+                                        <input type="text" id="food-query" class="form-control" 
+                                               placeholder="Type to search (e.g., Oats, Paneer, Chicken Wrap)" 
+                                               autocomplete="off" />
+                                        <button type="button" id="add-food" class="btn-add">
+                                            <i class="fas fa-plus"></i>
+                                            Add Food
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="food-suggestions" class="suggestions-dropdown"></div>
+                            <div class="form-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Pick from suggestions, then click Add. Each item counts as one serving.
+                            </div>
+                        </div>
+
+                        <!-- Quick Custom Calories -->
+                        <div class="form-group">
+                            <div class="input-group input-group-modern">
+                                <span class="input-group-icon">
+                                    <i class="fas fa-fire"></i>
+                                </span>
+                                <div class="input-content">
+                                    <label class="form-label">Quick Add Calories</label>
+                                    <div class="search-container">
+                                        <input type="number" id="custom-cal" class="form-control" placeholder="e.g., 250" min="0" max="10000" />
+                                        <button type="button" id="add-custom" class="btn-add">
+                                            <i class="fas fa-plus-circle"></i>
+                                            Add Calories
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Adds a custom calorie entry to today (no macros).
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="form-actions">
+                            {{ form.submit(class='btn btn-primary btn-submit') }}
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="modern-card tips-card">
+                <div class="card-header">
+                    <div class="header-content">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3 class="card-title">Pro Tips</h3>
+                            <p class="card-subtitle">Get the most out of tracking</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tips-grid">
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-weight-scale"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h5>Use a Food Scale</h5>
+                                <p>For accurate measurements and better tracking</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h5>Log Immediately</h5>
+                                <p>Track meals right after eating for accuracy</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-wine-glass"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h5>Include Everything</h5>
+                                <p>Don't forget drinks, snacks, and condiments</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h5>Be Consistent</h5>
+                                <p>Regular tracking beats perfect tracking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Selected Foods -->
+        <div class="col-lg-6">
+            <div class="modern-card foods-card">
+                <div class="card-header">
+                    <div class="header-content">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="header-text">
+                            <h3 class="card-title">Selected Foods</h3>
+                            <p class="card-subtitle">Your meal composition</p>
+                        </div>
+                    </div>
+                    <div class="foods-count">
+                        <span class="count-badge" id="foods-count">0</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    {% if saved_calories %}
+                    <div class="success-alert">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="alert-content">
+                            <strong>Successfully saved!</strong>
+                            <span>{{ saved_calories }} kcal on {{ saved_date }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="foods-table-container">
+                        <table class="foods-table" id="selected-table">
+                            <thead>
+                                <tr>
+                                    <th class="food-name">Food Item</th>
+                                    <th class="calories">Calories</th>
+                                    <th class="protein">Protein</th>
+                                    <th class="carbs">Carbs</th>
+                                    <th class="fats">Fats</th>
+                                    <th class="actions">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        
+                        <div class="empty-state" id="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-salad"></i>
+                            </div>
+                            <h4>No foods added yet</h4>
+                            <p>Search and add foods to see them here</p>
+                        </div>
+                    </div>
+
+                    <div class="nutrition-totals">
+                        <div class="total-item">
+                            <span class="total-label">Total Calories</span>
+                            <span class="total-value" id="total-calories">0</span>
+                        </div>
+                        <div class="macros-breakdown">
+                            <div class="macro-item">
+                                <span class="macro-dot protein"></span>
+                                <span class="macro-label">Protein</span>
+                                <span class="macro-value" id="total-protein">0g</span>
+                            </div>
+                            <div class="macro-item">
+                                <span class="macro-dot carbs"></span>
+                                <span class="macro-label">Carbs</span>
+                                <span class="macro-value" id="total-carbs">0g</span>
+                            </div>
+                            <div class="macro-item">
+                                <span class="macro-dot fats"></span>
+                                <span class="macro-label">Fats</span>
+                                <span class="macro-value" id="total-fats">0g</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #6366f1;
+        --primary-light: #818cf8;
+        --secondary: #ec4899;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --gray: #64748b;
+        --border: #e2e8f0;
+        --gradient: linear-gradient(135deg, #6366f1, #ec4899);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+        --radius: 16px;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f1f5f9 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    /* Modern Cards */
+    .modern-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .modern-card:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-2px);
+    }
+
+    .form-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .tips-card {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(99, 102, 241, 0.08));
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+
+    .foods-card {
+        height: 100%;
+    }
+
+    /* Card Header */
+    .card-header {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(236, 72, 153, 0.05));
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem 2rem;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .card-title {
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .card-subtitle {
+        color: var(--gray);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Form Styles */
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group-modern {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .input-group-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--light);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        margin-top: 1.75rem;
+        flex-shrink: 0;
+    }
+
+    .input-content {
+        flex: 1;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        background: white;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        color: var(--dark);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        outline: none;
+    }
+
+    .search-container {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .search-container .form-control {
+        flex: 1;
+    }
+
+    .btn-add {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .btn-add:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+    }
+
+    /* Suggestions Dropdown */
+    .suggestions-dropdown {
+        background: white;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        margin-top: 0.5rem;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggestion-item {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .suggestion-item:hover {
+        background: var(--light);
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-name {
+        font-weight: 500;
+        color: var(--dark);
+    }
+
+    .suggestion-calories {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-primary {
+        background: var(--gradient);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--dark);
+        border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    /* Tips Grid */
+    .tips-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .tip-item:hover {
+        background: white;
+        transform: translateX(5px);
+    }
+
+    .tip-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .tip-content h5 {
+        margin: 0 0 0.25rem 0;
+        color: var(--dark);
+        font-size: 0.9rem;
+    }
+
+    .tip-content p {
+        margin: 0;
+        color: var(--gray);
+        font-size: 0.8rem;
+    }
+
+    /* Foods Table */
+    .foods-count {
+        display: flex;
+        align-items: center;
+    }
+
+    .count-badge {
+        background: var(--gradient);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .foods-table-container {
+        position: relative;
+        min-height: 200px;
+    }
+
+    .foods-table {
+        width: 100%;
+        border-collapse: collapse;
+        display: none;
+    }
+
+    .foods-table th {
+        background: var(--light);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        color: var(--gray);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--border);
+    }
+
+    .foods-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        color: var(--dark);
+    }
+
+    .food-name { width: 35%; }
+    .calories, .protein, .carbs, .fats { width: 15%; text-align: center; }
+    .actions { width: 10%; text-align: center; }
+
+    .food-row {
+        transition: all 0.3s ease;
+    }
+
+    .food-row:hover {
+        background: var(--light);
+    }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        color: var(--danger);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-remove:hover {
+        background: var(--danger);
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--border);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h4 {
+        color: var(--gray);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--gray);
+        margin: 0;
+    }
+
+    /* Nutrition Totals */
+    .nutrition-totals {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .total-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .total-label {
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    .total-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .macros-breakdown {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .macro-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .macro-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .macro-dot.protein { background: #3b82f6; }
+    .macro-dot.carbs { background: #10b981; }
+    .macro-dot.fats { background: #f59e0b; }
+
+    .macro-label {
+        font-size: 0.8rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .macro-value {
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    /* Success Alert */
+    .success-alert {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.1));
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .success-alert i {
+        color: var(--success);
+        font-size: 1.25rem;
+    }
+
+    .alert-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .alert-content strong {
+        color: var(--success);
+    }
+
+    .alert-content span {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+
+    /* Form Hints and Errors */
+    .form-hint {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--gray);
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+    }
+
+    .form-hint i {
+        color: var(--primary);
+    }
+
+    .error-message {
+        color: var(--danger);
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .input-group-modern {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .input-group-icon {
+            margin-top: 0;
+            align-self: flex-start;
+        }
+
+        .search-container {
+            flex-direction: column;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .macros-breakdown {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .foods-table {
+            font-size: 0.875rem;
+        }
+
+        .foods-table th,
+        .foods-table td {
+            padding: 0.75rem 0.5rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const q = document.getElementById('food-query');
+        const suggestions = document.getElementById('food-suggestions');
+        const addBtn = document.getElementById('add-food');
+        const tableBody = document.querySelector('#selected-table tbody');
+        const totalsEl = document.getElementById('totals');
+        const caloriesHidden = document.getElementById('calories');
+        const intakeForm = document.getElementById('intake-form');
+        const foodsTable = document.querySelector('.foods-table');
+        const emptyState = document.getElementById('empty-state');
+        const foodsCount = document.getElementById('foods-count');
+
+        // Total elements
+        const totalCalories = document.getElementById('total-calories');
+        const totalProtein = document.getElementById('total-protein');
+        const totalCarbs = document.getElementById('total-carbs');
+        const totalFats = document.getElementById('total-fats');
+
+        let selected = [];
+        let lastResults = [];
+
+        function updateUI() {
+            // Show/hide table and empty state
+            if (selected.length > 0) {
+                foodsTable.style.display = 'table';
+                emptyState.style.display = 'none';
+            } else {
+                foodsTable.style.display = 'none';
+                emptyState.style.display = 'flex';
+            }
+            
+            // Update foods count
+            foodsCount.textContent = selected.length;
+        }
+
+        function render() {
+            tableBody.innerHTML = '';
+            let totals = { calories:0, protein_g:0, carbs_g:0, fats_g:0 };
+            
+            selected.forEach((it, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'food-row';
+                tr.innerHTML = `
+                    <td class="food-name">
+                        <strong>${it.food_name}</strong>
+                    </td>
+                    <td class="calories">
+                        <span class="calorie-badge">${it.calories}</span>
+                    </td>
+                    <td class="protein">${it.protein_g.toFixed(1)}g</td>
+                    <td class="carbs">${it.carbs_g.toFixed(1)}g</td>
+                    <td class="fats">${it.fats_g.toFixed(1)}g</td>
+                    <td class="actions">
+                        <button type="button" class="btn-remove" data-idx="${idx}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+                
+                totals.calories += it.calories;
+                totals.protein_g += it.protein_g;
+                totals.carbs_g += it.carbs_g;
+                totals.fats_g += it.fats_g;
+            });
+
+            // Update totals display
+            totalCalories.textContent = totals.calories;
+            totalProtein.textContent = totals.protein_g.toFixed(1) + 'g';
+            totalCarbs.textContent = totals.carbs_g.toFixed(1) + 'g';
+            totalFats.textContent = totals.fats_g.toFixed(1) + 'g';
+            
+            caloriesHidden.value = totals.calories || 0;
+            
+            // Ensure the field has a value for form validation
+            if (caloriesHidden && caloriesHidden.value === '' && totals.calories > 0) {
+                caloriesHidden.value = totals.calories;
+            }
+
+            // Bind remove buttons
+            tableBody.querySelectorAll('.btn-remove').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const i = parseInt(btn.getAttribute('data-idx'));
+                    selected.splice(i, 1);
+                    render();
+                    updateUI();
+                });
+            });
+
+            updateUI();
+        }
+
+        async function searchFoods(term) {
+            const url = `${window.location.origin}/api/foods?q=${encodeURIComponent(term)}`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                return data.results || [];
+            } catch (error) {
+                console.error('Error searching foods:', error);
+                return [];
+            }
+        }
+
+        function showSuggestions(items) {
+            suggestions.innerHTML = '';
+            if (!items.length) { 
+                suggestions.style.display = 'none'; 
+                return; 
+            }
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerHTML = `
+                    <span class="suggestion-name">${item.food_name}</span>
+                    <span class="suggestion-calories">${item.calories} kcal</span>
+                `;
+                div.addEventListener('click', () => {
+                    q.value = item.food_name;
+                    suggestions.style.display = 'none';
+                    // Auto-add the selected item
+                    addSelectedFood(item);
+                });
+                suggestions.appendChild(div);
+            });
+            suggestions.style.display = 'block';
+        }
+
+        function addSelectedFood(foodItem) {
+            selected.push(foodItem);
+            q.value = '';
+            suggestions.style.display = 'none';
+            render();
+            updateUI();
+            
+            // Show success animation
+            addBtn.style.background = 'var(--success)';
+            setTimeout(() => {
+                addBtn.style.background = 'var(--primary)';
+            }, 500);
+        }
+
+        // Add custom calories as a pseudo-item
+        const addCustomBtn = document.getElementById('add-custom');
+        const customCalInput = document.getElementById('custom-cal');
+        addCustomBtn.addEventListener('click', () => {
+            const val = parseInt(customCalInput.value || '0', 10);
+            if (isNaN(val) || val <= 0) return;
+            const customItem = {
+                food_name: 'Custom Calories',
+                calories: val,
+                protein_g: 0,
+                carbs_g: 0,
+                fats_g: 0
+            };
+            addSelectedFood(customItem);
+            customCalInput.value = '';
+        });
+
+        // Event Listeners
+        q.addEventListener('input', async () => {
+            const term = q.value.trim();
+            if (term.length < 2) { 
+                suggestions.style.display = 'none'; 
+                return; 
+            }
+            lastResults = await searchFoods(term);
+            showSuggestions(lastResults);
+        });
+
+        addBtn.addEventListener('click', () => {
+            const name = q.value.trim();
+            if (!name) return;
+            
+            const match = lastResults.find(r => r.food_name.toLowerCase() === name.toLowerCase()) || lastResults[0];
+            if (match) {
+                addSelectedFood(match);
+            }
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!suggestions.contains(e.target) && e.target !== q) {
+                suggestions.style.display = 'none';
+            }
+        });
+
+        // Ensure form submission includes calories
+        if (intakeForm) {
+            intakeForm.addEventListener('submit', function(e) {
+                // Ensure calories field is set before submission
+                if (!caloriesHidden.value || caloriesHidden.value === '' || caloriesHidden.value === '0') {
+                    // Calculate total from selected items
+                    const totalCal = selected.reduce((sum, item) => sum + (item.calories || 0), 0);
+                    if (totalCal > 0) {
+                        caloriesHidden.value = totalCal;
+                    } else {
+                        // If no calories selected, set to 0 to prevent validation error
+                        caloriesHidden.value = 0;
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        render();
+        updateUI();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,729 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-6">
+        <div class="col-12">
+            <div class="page-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="display-5 fw-bold text-gradient">
+                            <i class="fas fa-history me-3"></i>Food Intake History
+                        </h1>
+                        <p class="lead text-muted">Track your nutrition journey and monitor your progress</p>
+                    </div>
+                    <div class="header-actions">
+                        <a href="{{ url_for('add_intake') }}" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Entry
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i>Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-5">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card primary">
+                <div class="stat-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ intakes|length }}</h3>
+                    <p class="stat-label">Total Entries</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card success">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ today_calories }}</h3>
+                    <p class="stat-label">Today's Calories</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card info">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ weekly_avg }}</h3>
+                    <p class="stat-label">Weekly Average</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card warning">
+                <div class="stat-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ current_user.tdee }}</h3>
+                    <p class="stat-label">Your TDEE Goal</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Intake History Card -->
+            <div class="main-card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="header-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">Nutrition History</h5>
+                            <p class="card-subtitle">Your recent food intake records</p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <span class="badge badge-light">{{ intakes|length }} records</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if intakes %}
+                        <div class="table-container">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th class="date-col">Date</th>
+                                        <th class="calories-col">Calories</th>
+                                        <th class="status-col">Status</th>
+                                        <th class="actions-col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for intake in intakes %}
+                                    <tr class="intake-row">
+                                        <td class="date-cell">
+                                            <div class="date-wrapper">
+                                                <div class="date-main">{{ intake.date.strftime('%b %d') }}</div>
+                                                <div class="date-sub">{{ intake.date.strftime('%Y') }}</div>
+                                            </div>
+                                            <div class="day-name">{{ intake.date.strftime('%A') }}</div>
+                                        </td>
+                                        <td class="calories-cell">
+                                            <div class="calories-display">
+                                                <span class="calories-value">{{ intake.calories }}</span>
+                                                <span class="calories-unit">kcal</span>
+                                            </div>
+                                        </td>
+                                        <td class="status-cell">
+                                            {% set difference = intake.calories - current_user.tdee %}
+                                            <div class="status-indicator">
+                                                {% if difference > 500 %}
+                                                    <div class="status-badge danger">
+                                                        <i class="fas fa-arrow-up me-1"></i>
+                                                        <span>{{ difference }} over</span>
+                                                    </div>
+                                                    <div class="status-bar">
+                                                        <div class="progress-fill danger" style="width: 100%"></div>
+                                                    </div>
+                                                {% elif difference > 0 %}
+                                                    <div class="status-badge warning">
+                                                        <i class="fas fa-arrow-up me-1"></i>
+                                                        <span>{{ difference }} over</span>
+                                                    </div>
+                                                    <div class="status-bar">
+                                                        <div class="progress-fill warning" style="width: 70%"></div>
+                                                    </div>
+                                                {% elif difference > -500 %}
+                                                    <div class="status-badge success">
+                                                        <i class="fas fa-arrow-down me-1"></i>
+                                                        <span>{{ -difference }} under</span>
+                                                    </div>
+                                                    <div class="status-bar">
+                                                        <div class="progress-fill success" style="width: 40%"></div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="status-badge info">
+                                                        <i class="fas fa-arrow-down me-1"></i>
+                                                        <span>{{ -difference }} under</span>
+                                                    </div>
+                                                    <div class="status-bar">
+                                                        <div class="progress-fill info" style="width: 20%"></div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="actions-cell">
+                                            <form method="POST" action="{{ url_for('delete_intake', intake_id=intake.id) }}" 
+                                                  class="delete-form" 
+                                                  onsubmit="return confirm('Are you sure you want to delete this intake record?');">
+                                                <button type="submit" class="btn-action btn-delete">
+                                                    <i class="fas fa-trash"></i>
+                                                    <span>Delete</span>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h4>No intake records yet</h4>
+                            <p class="text-muted">Start tracking your food intake to see your history here.</p>
+                            <a href="{{ url_for('add_intake') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus me-2"></i>Add Your First Intake
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Stats -->
+        <div class="col-lg-4">
+            {% if intakes %}
+            <!-- Distribution Card -->
+            <div class="stats-card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title">
+                        <i class="fas fa-chart-pie me-2"></i>Intake Distribution
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="distribution-stats">
+                        <div class="distribution-item high">
+                            <div class="dist-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="dist-content">
+                                <h4 class="dist-value">{{ (intakes|selectattr('calories', 'gt', current_user.tdee + 500)|list|length) }}</h4>
+                                <p class="dist-label">High Days</p>
+                            </div>
+                        </div>
+                        <div class="distribution-item target">
+                            <div class="dist-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="dist-content">
+                                <h4 class="dist-value">{{ (intakes|selectattr('calories', 'le', current_user.tdee)|list|length) }}</h4>
+                                <p class="dist-label">On Target</p>
+                            </div>
+                        </div>
+                        <div class="distribution-item slight">
+                            <div class="dist-icon">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div class="dist-content">
+                                <h4 class="dist-value">{{ (intakes|selectattr('calories', 'gt', current_user.tdee)|selectattr('calories', 'le', current_user.tdee + 500)|list|length) }}</h4>
+                                <p class="dist-label">Slightly Over</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Progress -->
+            <div class="stats-card">
+                <div class="card-header">
+                    <h6 class="card-title">
+                        <i class="fas fa-bullseye me-2"></i>Weekly Progress
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <div class="progress-value">
+                                <h3>{{ weekly_avg }} kcal</h3>
+                                <p>Average Daily Intake</p>
+                            </div>
+                            <div class="progress-badge">
+                                {% set weekly_diff = weekly_avg - current_user.tdee %}
+                                {% if weekly_diff <= 0 %}
+                                    <span class="badge success-badge">On Track</span>
+                                {% elif weekly_diff <= 200 %}
+                                    <span class="badge warning-badge">Close</span>
+                                {% else %}
+                                    <span class="badge danger-badge">Over Target</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                {% set progress_percentage = [weekly_avg / current_user.tdee * 100, 100]|min %}
+                                <div class="progress-fill" style="width: {{ progress_percentage }}%"></div>
+                            </div>
+                            <div class="progress-labels">
+                                <span>0</span>
+                                <span>Target: {{ current_user.tdee }}</span>
+                                <span>{{ (current_user.tdee * 1.5)|int }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #4895ef;
+        --secondary: #3f37c9;
+        --success: #4cc9f0;
+        --warning: #f8961e;
+        --danger: #f72585;
+        --info: #7209b7;
+        --dark: #2b2d42;
+        --light: #f8f9fa;
+        --gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .page-header {
+        margin-bottom: 3rem;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .text-gradient {
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .stat-card.primary { border-left-color: var(--primary); }
+    .stat-card.success { border-left-color: var(--success); }
+    .stat-card.info { border-left-color: var(--info); }
+    .stat-card.warning { border-left-color: var(--warning); }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .stat-card.primary .stat-icon { background: var(--primary); }
+    .stat-card.success .stat-icon { background: var(--success); }
+    .stat-card.info .stat-icon { background: var(--info); }
+    .stat-card.warning .stat-icon { background: var(--warning); }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Main Cards */
+    .main-card, .stats-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        border: none;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .main-card:hover, .stats-card:hover {
+        box-shadow: var(--shadow-hover);
+    }
+
+    .card-header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 1rem;
+    }
+
+    .card-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .card-subtitle {
+        color: #6c757d;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Modern Table */
+    .table-container {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    .modern-table th {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .modern-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f1f3f4;
+        transition: all 0.3s ease;
+    }
+
+    .intake-row:hover td {
+        background: #f8f9ff;
+        transform: translateX(5px);
+    }
+
+    /* Table Cells */
+    .date-cell {
+        min-width: 120px;
+    }
+
+    .date-wrapper {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+    }
+
+    .date-main {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--dark);
+    }
+
+    .date-sub {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .day-name {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    .calories-display {
+        text-align: center;
+    }
+
+    .calories-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+    }
+
+    .calories-unit {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-left: 0.25rem;
+    }
+
+    /* Status Indicators */
+    .status-indicator {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge.danger { background: #ffe6e6; color: #dc3545; }
+    .status-badge.warning { background: #fff3cd; color: #856404; }
+    .status-badge.success { background: #d1edff; color: #0d6efd; }
+    .status-badge.info { background: #d1f7ff; color: #0dcaf0; }
+
+    .status-bar {
+        width: 100%;
+        height: 4px;
+        background: #e9ecef;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+
+    .progress-fill.danger { background: #dc3545; }
+    .progress-fill.warning { background: #ffc107; }
+    .progress-fill.success { background: #0d6efd; }
+    .progress-fill.info { background: #0dcaf0; }
+
+    /* Action Buttons */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: #ffe6e6;
+        color: #dc3545;
+    }
+
+    .btn-delete:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Distribution Stats */
+    .distribution-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .distribution-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .distribution-item:hover {
+        transform: translateX(5px);
+        background: #f8f9fa;
+    }
+
+    .distribution-item.high .dist-icon { background: #ffe6e6; color: #dc3545; }
+    .distribution-item.target .dist-icon { background: #d1edff; color: #0d6efd; }
+    .distribution-item.slight .dist-icon { background: #fff3cd; color: #856404; }
+
+    .dist-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+
+    .dist-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .dist-label {
+        color: #6c757d;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Progress Card */
+    .progress-card {
+        padding: 0.5rem 0;
+    }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .progress-value h3 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--dark);
+    }
+
+    .progress-value p {
+        color: #6c757d;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .success-badge { background: #d1edff; color: #0d6efd; }
+    .warning-badge { background: #fff3cd; color: #856404; }
+    .danger-badge { background: #ffe6e6; color: #dc3545; }
+
+    .progress-bar-container {
+        margin-top: 1.5rem;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+
+    .progress-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #e9ecef;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h4 {
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: center;
+        }
+
+        .header-actions {
+            width: 100%;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .header-actions .btn {
+            flex: 1;
+        }
+
+        .stat-card {
+            padding: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+        }
+
+        .modern-table {
+            font-size: 0.875rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 1rem 0.75rem;
+        }
+
+        .calories-value {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+{% endblock %}

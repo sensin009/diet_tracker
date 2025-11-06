@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="gradient-text mb-2">Your Profile</h1>
+        <p class="text-dark">View and manage your fitness profile</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-lg-4">
+        <div class="glass-card p-4 text-center">
+            <div class="feature-icon icon-primary mx-auto mb-3">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 class="gradient-text mb-1">{{ user.username }}</h3>
+            <p class="text-dark mb-3">{{ user.email }}</p>
+
+            <div class="glass-card p-3 text-start" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(99, 102, 241, 0.1));">
+                <h6 class="gradient-text mb-1"><i class="fas fa-dumbbell me-2"></i>Fitness Level</h6>
+                <p class="mb-0 text-capitalize"><strong class="text-success">{{ user.activity_level }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats and Info -->
+    <div class="col-lg-8">
+        <!-- BMI Card -->
+        <div class="glass-card p-4 mb-4">
+            <div class="row align-items-center g-3">
+                <div class="col-md-5">
+                    <h4 class="gradient-text mb-2"><i class="fas fa-heartbeat me-2"></i>Body Mass Index</h4>
+                    <div class="display-4 fw-bold gradient-text mb-2">{{ bmi }}</div>
+                    <span class="badge bg-primary">{{ bmi_category }}</span>
+                </div>
+                <div class="col-md-7">
+                    <div class="progress mb-2" style="height: 20px;">
+                        <div class="progress-bar" style="width: {{ (bmi / 40 * 100)|int }}%;">
+                            {{ bmi }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-dark fw-medium">
+                        <span>Underweight</span>
+                        <span>Normal</span>
+                        <span>Overweight</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Physical Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <div class="d-flex align-items-center">
+                        <div class="feature-icon icon-warning me-3">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 text-white">{{ user.weight }}</h3>
+                            <small class="text-white">Weight (kg)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <div class="d-flex align-items-center">
+                        <div class="feature-icon icon-success me-3">
+                            <i class="fas fa-ruler-vertical"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 text-white">{{ user.height }}</h3>
+                            <small class="text-white">Height (cm)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                    <div class="d-flex align-items-center">
+                        <div class="feature-icon icon-danger me-3">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div>
+                            <h3 class="mb-0 text-white">{{ user.age }}</h3>
+                            <small class="text-white">Age (years)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Info Card -->
+        <div class="glass-card p-4">
+            <h4 class="gradient-text mb-3"><i class="fas fa-info-circle me-2"></i>Detailed Information</h4>
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-venus-mars me-3 text-primary fa-lg"></i>
+                        <div>
+                            <small class="text-dark">Gender</small>
+                            <div class="fw-bold text-capitalize text-dark">{{ user.gender }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-running me-3 text-success fa-lg"></i>
+                        <div>
+                            <small class="text-dark">Activity Level</small>
+                            <div class="fw-bold text-capitalize text-dark">{{ user.activity_level }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-fire me-3 text-warning fa-lg"></i>
+                        <div>
+                            <small class="text-dark">TDEE</small>
+                            <div class="fw-bold text-dark">{{ user.tdee|int }} kcal/day</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-apple-alt me-3 text-info fa-lg"></i>
+                        <div>
+                            <small class="text-dark">Diet Type</small>
+                            <div class="fw-bold text-dark">{{ user.diet_type }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BMI Information -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <h5 class="gradient-text mb-3"><i class="fas fa-question-circle me-2"></i>Understanding Your BMI</h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="glass-card p-3 text-center" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(99, 102, 241, 0.1));">
+                        <strong class="d-block text-info">Underweight</strong>
+                        <p class="mb-0 small text-dark mt-1">BMI < 18.5</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-3 text-center" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));">
+                        <strong class="d-block text-success">Normal Weight</strong>
+                        <p class="mb-0 small text-dark mt-1">BMI 18.5 – 24.9</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-3 text-center" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(16, 185, 129, 0.1));">
+                        <strong class="d-block text-warning">Overweight</strong>
+                        <p class="mb-0 small text-dark mt-1">BMI 25 – 29.9</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-3 text-center" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1));">
+                        <strong class="d-block text-danger">Obese</strong>
+                        <p class="mb-0 small text-dark mt-1">BMI ≥ 30</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-gradient">
+        <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+    </a>
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .text-dark {
+        color: #1e293b !important;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .icon-primary { 
+        background: rgba(99, 102, 241, 0.1); 
+        color: #6366f1; 
+    }
+    .icon-warning { 
+        background: rgba(245, 158, 11, 0.1); 
+        color: #f59e0b; 
+    }
+    .icon-success { 
+        background: rgba(16, 185, 129, 0.1); 
+        color: #10b981; 
+    }
+    .icon-danger { 
+        background: rgba(239, 68, 68, 0.1); 
+        color: #ef4444; 
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+    
+    .stat-card {
+        color: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+    
+    .progress-bar {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+{% endblock %}

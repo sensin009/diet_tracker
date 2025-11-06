@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        <div class="mb-4">
+            <div class="diet-icon mb-3">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h1 class="display-6 fw-bold mb-2 text-dark">{{ diet_type.replace('_', ' ').title() }} Plan</h1>
+            <p class="text-muted">Personalized with your preferences</p>
+        </div>
+    </div>
+</div>
+
+<!-- Daily Totals -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card border-0 bg-white shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="card-title mb-4 text-center text-dark">Daily Nutritional Targets</h5>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="text-center p-3 rounded-3 border calorie-card">
+                            <div class="text-danger mb-2">
+                                <i class="fas fa-fire fa-lg"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1 text-dark">{{ totals.calories }}</h4>
+                            <small class="text-muted">Calories</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 rounded-3 border protein-card">
+                            <div class="text-success mb-2">
+                                <i class="fas fa-drumstick-bite fa-lg"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1 text-dark">{{ totals.protein_g }}g</h4>
+                            <small class="text-muted">Protein</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 rounded-3 border carb-card">
+                            <div class="text-warning mb-2">
+                                <i class="fas fa-bread-slice fa-lg"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1 text-dark">{{ totals.carbs_g }}g</h4>
+                            <small class="text-muted">Carbs</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 rounded-3 border fat-card">
+                            <div class="text-info mb-2">
+                                <i class="fas fa-cheese fa-lg"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1 text-dark">{{ totals.fats_g }}g</h4>
+                            <small class="text-muted">Fats</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Meal Plan -->
+{% for meal_time, items in plan.daily_meals.items() %}
+<div class="meal-section mb-4">
+    <div class="d-flex align-items-center mb-3">
+        <div class="meal-time-badge bg-primary text-white rounded-pill px-3 py-1 me-3">
+            <i class="fas fa-clock me-2"></i>{{ meal_time.replace('_', ' ').title() }}
+        </div>
+        <small class="text-muted">Choose one option</small>
+    </div>
+    
+    <div class="row g-3">
+        {% for option in items %}
+        <div class="col-xl-4 col-lg-6">
+            <div class="card border h-100 meal-card bg-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h6 class="card-title fw-bold mb-0 text-dark">{{ option.food_name or option.name }}</h6>
+                        <span class="badge bg-primary rounded-pill">{{ option.calories|int }} kcal</span>
+                    </div>
+                    
+                    <!-- Macros -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <div class="text-center p-2 rounded border protein-macro">
+                                <small class="d-block text-success fw-bold">{{ (option.protein_g|default(option.protein)|default(0)|float)|round(0) }}g</small>
+                                <small class="text-muted">Protein</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center p-2 rounded border carb-macro">
+                                <small class="d-block text-warning fw-bold">{{ (option.carbs_g|default(option.carbs)|default(0)|float)|round(0) }}g</small>
+                                <small class="text-muted">Carbs</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center p-2 rounded border fat-macro">
+                                <small class="d-block text-info fw-bold">{{ (option.fats_g|default(option.fats)|default(0)|float)|round(0) }}g</small>
+                                <small class="text-muted">Fats</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if option.ingredients %}
+                    <div class="ingredients-section">
+                        <small class="text-muted d-block mb-2">Ingredients:</small>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for ingredient in option.ingredients %}
+                            <span class="badge bg-light text-dark border">{{ ingredient }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+<!-- Tips -->
+<div class="card border bg-white shadow-sm mt-4">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+            <i class="fas fa-lightbulb text-warning me-2"></i>
+            <h6 class="mb-0 fw-bold text-dark">Tips for {{ diet_type.replace('_', ' ').title() }}</h6>
+        </div>
+        
+        {% if ml_recommendations and ml_recommendations|length > 0 %}
+        <div class="mb-3">
+            <small class="fw-bold d-block mb-2 text-dark">ML Recommendations:</small>
+            <ul class="list-unstyled mb-0">
+                {% for rec in ml_recommendations %}
+                <li class="mb-1">
+                    <small><i class="fas fa-check text-success me-2"></i>{{ rec }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <ul class="list-unstyled mb-0">
+            {% if diet_type == 'weight_loss' %}
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Drink plenty of water throughout the day</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Focus on high-protein foods</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Include vegetables for volume</small></li>
+            {% elif diet_type == 'muscle_gain' %}
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Eat every 3-4 hours</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Prioritize protein intake</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Don't skip post-workout meals</small></li>
+            {% elif diet_type == 'endurance' %}
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Carbs are your primary fuel</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Time carb intake around training</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Stay well hydrated</small></li>
+            {% else %}
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Focus on whole foods</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Maintain balanced nutrition</small></li>
+            <li class="mb-1"><small><i class="fas fa-check text-success me-2"></i>Listen to your body</small></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="text-center mt-5 pt-3">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg me-3">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+    <a href="{{ url_for('customize_diet') }}" class="btn btn-primary btn-lg me-3">
+        <i class="fas fa-sliders-h me-2"></i>Customize Diet
+    </a>
+    <a href="{{ url_for('add_intake') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus me-2"></i>Log Today's Intake
+    </a>
+</div>
+
+<style>
+.diet-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.meal-card {
+    transition: transform 0.2s ease;
+    background: white;
+}
+
+.meal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.meal-time-badge {
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.card {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+/* Color accents */
+.calorie-card {
+    border-left: 4px solid #ff6b35 !important;
+}
+
+.protein-card {
+    border-left: 4px solid #38c172 !important;
+}
+
+.carb-card {
+    border-left: 4px solid #f6993f !important;
+}
+
+.fat-card {
+    border-left: 4px solid #6cb2eb !important;
+}
+
+.protein-macro {
+    border-left: 3px solid #38c172 !important;
+}
+
+.carb-macro {
+    border-left: 3px solid #f6993f !important;
+}
+
+.fat-macro {
+    border-left: 3px solid #6cb2eb !important;
+}
+
+.text-primary { color: #667eea !important; }
+.text-success { color: #38c172 !important; }
+.text-warning { color: #f6993f !important; }
+.text-info { color: #6cb2eb !important; }
+.text-danger { color: #ff6b35 !important; }
+
+.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.meal-section {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Button specific styles */
+.action-buttons .btn {
+    margin: 0.25rem;
+    min-width: 180px;
+}
+
+/* Ensure white background consistency */
+body {
+    background: white;
+}
+
+.card, .meal-card {
+    background: white;
+}
+
+.border {
+    border-color: #e9ecef !important;
+}
+
+/* Responsive button adjustments */
+@media (max-width: 768px) {
+    .action-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.75rem;
+    }
+    
+    .action-buttons .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}

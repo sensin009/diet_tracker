@@ -1,0 +1,181 @@
+food_id,food_name,calories,protein_g,carbs_g,fats_g,diabetic_friendly,vegetarian,vegan,contains_dairy,contains_nuts,contains_gluten,contains_soy
+1,Brown Rice (100g),123,2.7,26.0,0.9,True,True,True,False,False,False,False
+2,White Rice (100g),130,2.7,28.0,0.3,False,True,True,False,False,False,False
+3,Whole Wheat Bread (2 slices),160,8.0,28.0,2.5,True,True,True,False,False,True,False
+4,Quinoa (100g),120,4.4,21.0,1.9,True,True,True,False,False,False,False
+5,Oats (100g),389,13.2,66.0,6.9,False,True,True,False,False,False,False
+6,Roti (2 medium),140,6.0,28.0,2.0,True,True,True,False,False,True,False
+7,Chapati (2 medium),140,6.0,28.0,2.0,True,True,True,False,False,True,False
+8,Millet (100g),378,11.0,73.0,4.2,False,True,True,False,False,False,False
+9,Barley (100g),354,12.5,73.5,2.3,False,True,True,False,False,True,False
+10,Buckwheat (100g),343,13.3,71.0,3.4,False,True,True,False,False,True,False
+11,Chickpeas (100g),164,8.9,27.0,2.6,True,True,True,False,False,False,False
+12,Lentils Red (100g),116,9.0,20.0,0.4,True,True,True,False,False,False,False
+13,Lentils Green (100g),116,9.0,20.0,0.4,True,True,True,False,False,False,False
+14,Kidney Beans (100g),127,8.7,23.0,0.5,True,True,True,False,False,False,False
+15,Black Beans (100g),132,8.9,24.0,0.5,True,True,True,False,False,False,False
+16,Tofu (100g),76,8.0,1.9,4.8,True,True,True,False,False,False,True
+17,Paneer (100g),265,18.0,3.6,20.0,True,True,False,True,False,False,False
+18,Greek Yogurt (100g),59,10.0,3.6,0.4,True,True,False,True,False,False,False
+19,Cottage Cheese (100g),98,11.0,3.4,4.3,True,True,False,True,False,False,False
+20,Soy Milk (250ml),80,3.3,4.4,2.0,True,True,False,True,False,False,True
+21,Eggs (2 large),155,13.0,1.1,11.0,True,False,False,False,False,False,False
+22,Egg Whites (4),52,11.0,0.7,0.2,True,False,False,False,False,False,False
+23,Almonds (30g),170,6.0,6.1,15.0,True,True,True,False,True,False,False
+24,Walnuts (30g),185,4.3,3.9,18.5,True,True,True,False,True,False,False
+25,Peanuts (30g),161,7.3,7.6,14.0,True,True,True,False,True,False,False
+26,Chicken Breast (100g),165,31.0,0.0,3.6,True,False,False,False,False,False,False
+27,Chicken Thigh (100g),209,26.0,0.0,11.0,True,False,False,False,False,False,False
+28,Turkey Breast (100g),135,30.0,0.0,1.0,True,False,False,False,False,False,False
+29,Fish Salmon (100g),208,20.0,0.0,13.0,True,False,False,False,False,False,False
+30,Fish Tuna (100g),130,30.0,0.0,1.0,True,False,False,False,False,False,False
+31,Fish Mackerel (100g),205,20.0,0.0,16.3,True,False,False,False,False,False,False
+32,Fish Cod (100g),82,18.0,0.0,0.7,True,False,False,False,False,False,False
+33,Shrimp (100g),99,24.0,0.8,0.5,True,False,False,False,False,False,False
+34,Lean Beef (100g),250,26.0,0.0,15.0,True,False,False,False,False,False,False
+35,Pork Lean (100g),242,27.0,0.0,14.0,True,False,False,False,False,False,False
+36,Spinach (100g),23,2.9,3.6,0.4,True,True,True,False,False,False,False
+37,Broccoli (100g),34,2.8,7.0,0.4,True,True,True,False,False,False,False
+38,Cauliflower (100g),25,1.9,5.0,0.2,True,True,True,False,False,False,False
+39,Tomato (100g),18,0.9,3.9,0.2,True,True,True,False,False,False,False
+40,Cucumber (100g),16,0.7,3.6,0.1,True,True,True,False,False,False,False
+41,Carrot (100g),41,0.9,10.0,0.2,True,True,True,False,False,False,False
+42,Bell Pepper (100g),31,1.0,6.0,0.3,True,True,True,False,False,False,False
+43,Onion (100g),40,1.1,8.8,0.1,True,True,True,False,False,False,False
+44,Garlic (10g),149,0.6,1.0,0.0,True,True,True,False,False,False,False
+45,Ginger (10g),80,0.8,1.0,0.1,True,True,True,False,False,False,False
+46,Potato (100g),77,2.0,20.0,0.4,False,True,True,False,False,False,False
+47,Sweet Potato (100g),86,1.6,22.0,1.2,True,True,True,False,False,False,False
+48,Pumpkin (100g),26,1.0,7.0,0.7,True,True,True,False,False,False,False
+49,Zucchini (100g),17,0.7,4.0,0.2,True,True,True,False,False,False,False
+50,Eggplant (100g),25,1.0,9.0,0.2,True,False,False,False,False,False,False
+51,Apple (1 medium),95,0.3,25.0,0.3,True,True,True,False,False,False,False
+52,Banana (1 medium),105,1.3,27.0,0.4,True,True,True,False,False,False,False
+53,Orange (1 medium),62,1.2,12.0,0.1,True,True,True,False,False,False,False
+54,Mango (100g),60,0.8,15.0,0.4,True,True,True,False,False,False,False
+55,Papaya (100g),43,0.5,4.0,0.1,True,True,True,False,False,False,False
+56,Watermelon (100g),30,0.4,4.0,0.1,True,True,True,False,False,False,False
+57,Grapes (100g),69,0.7,6.0,0.4,True,True,True,False,False,False,False
+58,Strawberries (100g),32,0.7,14.0,0.1,True,True,True,False,False,False,False
+59,Blueberries (100g),57,1.0,0.0,0.6,True,True,True,False,False,False,False
+60,Pomegranate (100g),83,1.7,0.0,1.5,True,True,True,False,False,False,False
+61,Milk Whole (250ml),150,8.0,0.0,8.0,True,True,False,True,False,False,False
+62,Milk Skim (250ml),83,8.0,0.0,0.5,True,True,False,True,False,False,False
+63,Almond Milk (250ml),30,1.0,0.0,2.5,True,True,False,True,True,False,False
+64,Oat Milk (250ml),120,3.4,0.0,8.0,True,True,False,True,False,False,False
+65,Coconut Milk (250ml),230,2.0,8.5,9.0,True,True,False,True,False,False,False
+66,Yogurt Plain (100g),59,3.4,6.0,3.3,True,True,False,True,False,False,False
+67,Cheddar Cheese (30g),115,7.0,6.5,9.0,True,True,False,True,False,False,False
+68,Mozzarella (30g),85,4.5,5.0,7.5,True,True,True,False,False,False,False
+69,Butter (10g),72,0.1,5.0,7.2,True,True,False,True,False,False,False
+70,Ghee (10g),90,0.0,6.0,10.0,True,True,False,True,False,False,False
+71,Olive Oil (15ml),120,0.0,63.0,15.0,False,True,True,False,False,False,False
+72,Coconut Oil (15ml),120,0.0,20.0,15.0,True,True,True,False,False,False,False
+73,Sunflower Oil (15ml),120,0.0,61.0,15.0,False,True,True,False,False,False,False
+74,Mustard Oil (15ml),120,0.0,59.0,15.0,False,True,True,False,False,False,False
+75,Avocado (100g),160,2.0,62.6,14.7,False,True,True,False,False,False,False
+76,Peanut Butter (30g),190,8.0,14.0,16.0,True,True,False,True,True,False,False
+77,Almond Butter (30g),195,7.5,11.0,16.0,True,True,False,True,True,False,False
+78,Flaxseeds (15g),75,4.0,19.0,6.0,True,True,True,False,False,False,False
+79,Chia Seeds (15g),70,4.0,52.0,6.0,False,True,True,False,False,False,False
+80,Sesame Seeds (15g),85,5.0,60.0,7.0,False,True,True,False,False,False,False
+81,Moong Dal (100g),347,24.6,7.0,1.4,True,True,True,False,False,False,False
+82,Masoor Dal (100g),116,9.0,12.5,0.0,True,True,True,False,False,False,False
+83,Toor Dal (100g),335,22.5,10.0,1.0,True,True,True,False,False,False,False
+84,Urad Dal (100g),341,25.2,12.5,1.3,True,True,True,False,False,False,False
+85,Chana Dal (100g),364,21.4,18.0,1.5,True,True,True,False,False,False,False
+86,Green Peas (100g),81,5.4,6.0,0.4,True,True,True,False,False,False,False
+87,Soybeans (100g),173,16.6,9.0,7.2,True,True,True,False,False,False,True
+88,Lima Beans (100g),115,7.8,8.0,6.0,True,True,True,False,False,False,False
+89,White Beans (100g),333,21.4,22.0,0.3,True,True,True,False,False,False,False
+90,Pinto Beans (100g),347,21.4,0.5,0.0,True,True,True,False,False,False,False
+91,Dark Chocolate (30g),170,3.0,12.0,12.0,True,True,True,False,False,False,False
+92,Honey (15g),46,0.0,0.0,0.0,False,True,False,False,False,False,False
+93,Jaggery (15g),38,0.0,0.0,0.0,True,True,True,False,False,False,False
+94,Brown Sugar (15g),48,0.0,0.0,0.0,False,True,True,False,False,False,False
+95,Dates (3 pieces),66,0.5,0.1,0.1,True,True,True,False,False,False,False
+96,Coconut Fresh (30g),100,1.0,8.0,8.0,True,True,True,False,False,False,False
+97,Cashews (30g),170,5.4,15.0,15.0,True,True,True,False,True,False,False
+98,Pistachios (30g),165,5.8,14.0,14.0,True,True,True,False,True,False,False
+99,Raisins (30g),85,1.4,0.5,0.5,True,True,True,False,False,False,False
+100,Green Tea (1 cup),2,0.0,0.0,0.0,True,True,True,False,False,False,False
+101,Greek Salad (200g),180,6.0,10.0,12.0,True,True,False,True,False,False,False
+102,Tofu Stir-fry (200g),250,18.0,14.0,12.0,True,True,True,False,False,False,True
+103,Quinoa Salad (200g),230,8.0,35.0,7.0,True,True,True,False,False,False,False
+104,Avocado Toast (1 slice),220,6.0,22.0,12.0,False,True,True,False,False,True,False
+105,Peanut Butter Sandwich,300,12.0,30.0,14.0,False,True,False,False,True,True,False
+106,Protein Smoothie (300ml),280,24.0,28.0,6.0,True,True,False,True,False,False,False
+107,Chia Pudding (200g),220,8.0,24.0,10.0,True,True,True,False,False,False,False
+108,Grilled Chicken Wrap,380,28.0,35.0,12.0,False,False,False,False,False,True,False
+109,Vegetable Soup (300ml),120,4.0,18.0,3.0,True,True,True,False,False,False,False
+110,Masala Oats (200g),240,8.0,38.0,6.0,True,True,True,False,False,True,False
+111,Egg & Veg Omelet (2 eggs),260,18.0,6.0,18.0,True,False,False,False,False,False,False
+112,Tuna Salad (200g),300,26.0,8.0,18.0,True,False,False,False,False,False,False
+113,Brown Rice & Dal (300g),420,16.0,72.0,6.0,True,True,True,False,False,False,False
+114,Grilled Fish Tacos (2),450,28.0,45.0,16.0,False,False,False,False,False,True,False
+115,Sprouts Salad (200g),180,12.0,22.0,4.0,True,True,True,False,False,False,False
+116,Berry Yogurt Bowl (200g),190,12.0,26.0,4.0,True,True,False,True,False,False,False
+117,Paneer Tikka (200g),350,26.0,10.0,22.0,False,True,False,True,False,False,False
+118,Mixed Nuts (30g),180,6.0,6.0,15.0,False,True,True,False,True,False,False
+119,Apple Cinnamon Oatmeal (250g),280,8.0,52.0,5.0,True,True,True,False,False,False,False
+120,Grilled Turkey (150g),240,28.0,0.0,12.0,True,False,False,False,False,False,False
+121,Soba Noodle Bowl (300g),420,18.0,62.0,10.0,False,True,True,False,False,True,False
+122,Baked Sweet Potato (200g),180,4.0,42.0,0.0,True,True,True,False,False,False,False
+123,Hummus & Veg Sticks (150g),220,8.0,18.0,12.0,True,True,True,False,False,False,True
+124,Grilled Shrimp (150g),200,28.0,2.0,8.0,True,False,False,False,False,False,False
+125,Pesto Chicken Pasta (300g),560,32.0,60.0,20.0,False,False,False,True,False,True,False
+126,Millet Upma (250g),300,8.0,52.0,6.0,True,True,True,False,False,True,False
+127,Moong Dal Chilla (2 pcs),260,16.0,28.0,8.0,True,True,True,False,False,False,False
+128,Veggie Sandwich (WW Bread),320,12.0,44.0,10.0,False,True,True,False,False,True,False
+129,Chicken Caesar Salad (300g),420,34.0,16.0,24.0,False,False,False,True,False,False,False
+130,Cottage Cheese Salad (200g),260,22.0,10.0,14.0,True,True,False,True,False,False,False
+131,Lentil Soup (300ml),210,14.0,28.0,4.0,True,True,True,False,False,False,False
+132,Grilled Salmon Bowl (350g),520,32.0,48.0,18.0,False,False,False,False,False,False,False
+133,Roasted Chickpeas (50g),200,10.0,30.0,4.0,True,True,True,False,False,False,False
+134,Omelet Wrap (1),320,20.0,22.0,16.0,False,False,False,True,False,True,False
+135,Veggie Quinoa Bowl (300g),420,16.0,62.0,10.0,True,True,True,False,False,False,False
+136,Protein Bar (1),220,20.0,22.0,6.0,True,True,False,False,False,False,False
+137,Besan Cheela (2 pcs),300,16.0,34.0,8.0,True,True,True,False,False,False,False
+138,Prawn Curry (200g),350,28.0,8.0,22.0,False,False,False,False,False,False,False
+139,Boiled Eggs (2),156,13.0,1.0,10.0,True,False,False,False,False,False,False
+140,Overnight Oats with Berries (250g),310,12.0,52.0,8.0,True,True,True,False,False,False,False
+141,Greek Yogurt Parfait (200g),230,18.0,28.0,5.0,True,True,False,True,False,False,False
+142,Peanut Butter Banana Smoothie (300ml),350,18.0,42.0,12.0,False,True,False,True,True,False,False
+143,Spinach Banana Protein Smoothie (300ml),290,22.0,34.0,6.0,True,True,False,True,False,False,False
+144,Avocado Egg Toast (1 slice),280,12.0,22.0,16.0,False,False,False,True,False,True,False
+145,Poha (250g),320,6.0,58.0,6.0,True,True,True,False,False,True,False
+146,Idli Sambar (3 idli + sambar),360,14.0,64.0,6.0,True,True,True,False,False,True,False
+147,Dosa with Chutney (1 dosa),420,10.0,62.0,14.0,False,True,True,False,False,True,False
+148,Pav Bhaji (1 plate),520,10.0,72.0,20.0,False,True,True,True,False,True,False
+149,Paneer Bhurji (200g),380,24.0,12.0,26.0,True,True,False,True,False,False,False
+150,Chole Bhature (1 plate),690,18.0,88.0,28.0,False,True,True,True,False,True,False
+151,Rajma Chawal (350g),540,18.0,92.0,8.0,True,True,True,False,False,True,False
+152,Grilled Chicken Breast with Veg (300g),420,42.0,18.0,16.0,True,False,False,False,False,False,False
+153,Chicken Biryani (300g),560,24.0,74.0,18.0,False,False,False,True,False,True,False
+154,Veg Biryani (300g),520,12.0,88.0,12.0,True,True,True,True,False,True,False
+155,Paneer Butter Masala (200g),480,18.0,16.0,34.0,False,True,False,True,False,False,False
+156,Palak Paneer (250g),420,22.0,18.0,26.0,True,True,False,True,False,False,False
+157,Dal Tadka (250g),280,14.0,32.0,10.0,True,True,True,False,False,False,False
+158,Grilled Fish with Quinoa (300g),520,34.0,42.0,18.0,True,False,False,False,False,False,False
+159,Tandoori Chicken (200g),360,36.0,6.0,18.0,True,False,False,False,False,False,False
+160,Mixed Veg Pulao (300g),480,10.0,82.0,10.0,True,True,True,False,False,True,False
+161,Stuffed Paratha (1),330,8.0,48.0,10.0,False,True,True,True,False,True,False
+162,Sprouted Moong Salad (200g),220,14.0,32.0,4.0,True,True,True,False,False,False,False
+163,Grilled Paneer Wrap,420,24.0,48.0,14.0,True,True,False,True,False,True,False
+164,Chicken Salad Wrap,450,32.0,42.0,16.0,True,False,False,True,False,True,False
+165,Tofu Buddha Bowl (350g),480,26.0,58.0,16.0,True,True,True,False,False,False,True
+166,Soba Noodle Stir-fry Veg (350g),520,16.0,78.0,12.0,True,True,True,False,False,True,False
+167,Turkey Sandwich (WW Bread),420,28.0,44.0,12.0,True,False,False,True,False,True,False
+168,Grilled Halloumi Salad (250g),380,22.0,18.0,22.0,True,True,False,True,False,False,False
+169,Fruit and Nut Mix (40g),220,6.0,16.0,14.0,False,True,True,False,True,False,False
+170,Roasted Makhana (30g),130,4.0,18.0,4.0,True,True,True,False,False,False,False
+171,Protein Pancakes (2),360,24.0,44.0,10.0,True,True,False,True,False,True,False
+172,Blueberry Smoothie Bowl (300g),340,16.0,52.0,8.0,True,True,False,True,False,False,False
+173,Chicken Tikka Salad (300g),420,38.0,16.0,16.0,True,False,False,True,False,False,False
+174,Beef Steak with Veg (300g),620,42.0,18.0,34.0,True,False,False,False,False,False,False
+175,Scrambled Tofu (200g),260,22.0,8.0,16.0,True,True,True,False,False,False,True
+176,Masala Chai (200ml),120,2.0,14.0,4.0,True,True,False,True,False,False,False
+177,Cold Coffee (250ml),180,6.0,26.0,4.0,True,True,False,True,False,False,False
+178,Sweet Lassi (300ml),320,10.0,42.0,10.0,False,True,False,True,False,False,False
+179,Vegetable Khichdi (300g),420,12.0,78.0,6.0,True,True,True,False,False,True,False
+180,Upma (250g),340,8.0,58.0,8.0,True,True,True,False,False,True,False

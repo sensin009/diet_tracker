@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="gradient-text mb-2">Admin Control Panel</h1>
+        <p class="text-dark">Manage users and monitor platform activity</p>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+            <h2 class="mb-0 text-white">{{ stats.users }}</h2>
+            <small class="text-white">Total Users</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <h2 class="mb-0 text-white">{{ stats.intakes }}</h2>
+            <small class="text-white">Total Intakes</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+            <h2 class="mb-0 text-white">{{ stats.active_today }}</h2>
+            <small class="text-white">Active Today</small>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions + Overview -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h4 class="gradient-text mb-3"><i class="fas fa-tasks me-2"></i>Quick Actions</h4>
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('admin_users') }}" class="btn btn-gradient">
+                    <i class="fas fa-users-cog me-2"></i>Manage Users
+                </a>
+                <a href="{{ url_for('admin_export_users') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-file-download me-2"></i>Export All Users
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="glass-card p-4">
+            <h4 class="gradient-text mb-3"><i class="fas fa-chart-pie me-2"></i>Platform Overview</h4>
+            <div class="glass-card p-3 mb-2">
+                <div class="d-flex justify-content-between">
+                    <span class="text-dark">Avg Intakes / User</span>
+                    <strong class="text-primary">{{ (stats.intakes / stats.users)|round(1) if stats.users > 0 else 0 }}</strong>
+                </div>
+            </div>
+            <div class="glass-card p-3 mb-2">
+                <div class="d-flex justify-content-between">
+                    <span class="text-dark">Active Rate Today</span>
+                    <strong class="text-success">{{ ((stats.active_today / stats.users * 100)|round(1) if stats.users > 0 else 0) }}%</strong>
+                </div>
+            </div>
+            <div class="glass-card p-3">
+                <div class="d-flex justify-content-between">
+                    <span class="text-dark">Total Records</span>
+                    <strong class="text-warning">{{ stats.users + stats.intakes }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Status -->
+<div class="row">
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <h5 class="gradient-text mb-3"><i class="fas fa-server me-2"></i>System Status</h5>
+            <div class="row text-center g-3">
+                <div class="col-md-3">
+                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                    <p class="mt-2 mb-0 text-dark"><strong>Database</strong></p>
+                    <small class="text-dark">Operational</small>
+                </div>
+                <div class="col-md-3">
+                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                    <p class="mt-2 mb-0 text-dark"><strong>API</strong></p>
+                    <small class="text-dark">Healthy</small>
+                </div>
+                <div class="col-md-3">
+                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                    <p class="mt-2 mb-0 text-dark"><strong>Auth System</strong></p>
+                    <small class="text-dark">Secure</small>
+                </div>
+                <div class="col-md-3">
+                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                    <p class="mt-2 mb-0 text-dark"><strong>Backups</strong></p>
+                    <small class="text-dark">Active</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        color: #1e293b !important;
+    }
+    
+    .text-dark {
+        color: #1e293b !important;
+    }
+    
+    .stat-card {
+        color: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+</style>
+{% endblock %}

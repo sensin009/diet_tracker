@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5">
+        <div class="glass-card p-4">
+            <div class="text-center mb-4">
+                <div class="feature-icon icon-primary mx-auto">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <h2 class="gradient-text">Welcome Back</h2>
+                <p class="text-dark">Log in to continue your fitness journey</p>
+            </div>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-user me-2 text-primary"></i>{{ form.username.label.text }}
+                    </label>
+                    {{ form.username(class='form-control form-control-light', placeholder='Enter your username') }}
+                    {% if form.username.errors %}
+                        <div class="text-danger small mt-1">{{ form.username.errors[0] }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-medium text-dark">
+                        <i class="fas fa-lock me-2 text-primary"></i>{{ form.password.label.text }}
+                    </label>
+                    {{ form.password(class='form-control form-control-light', placeholder='Enter your password') }}
+                    {% if form.password.errors %}
+                        <div class="text-danger small mt-1">{{ form.password.errors[0] }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-grid mb-3">
+                    {{ form.submit(class='btn btn-gradient btn-lg') }}
+                </div>
+            </form>
+
+            <div class="text-center">
+                <small class="text-dark d-block mb-2">Don't have an account?</small>
+                <a href="{{ url_for('register') }}" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-user-plus me-1"></i>Create Account
+                </a>
+            </div>
+        </div>
+
+        <!-- Feature Tiles -->
+        <div class="row g-3 mt-3">
+            <div class="col-6">
+                <div class="glass-card text-center p-3">
+                    <i class="fas fa-chart-line fa-lg text-primary mb-2"></i>
+                    <p class="mb-0 small fw-medium text-dark">Track Progress</p>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="glass-card text-center p-3">
+                    <i class="fas fa-trophy fa-lg text-warning mb-2"></i>
+                    <p class="mb-0 small fw-medium text-dark">Achieve Goals</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Form styling for white background */
+    .form-control-light {
+        background: #ffffff !important;
+        border: 1px solid #dee2e6 !important;
+        color: #1e293b !important;
+        border-radius: var(--radius);
+    }
+    
+    .form-control-light:focus {
+        background: #ffffff !important;
+        border-color: #6366f1 !important;
+        color: #1e293b !important;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+    }
+    
+    .form-control-light::placeholder {
+        color: #6b7280 !important;
+    }
+    
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .text-dark {
+        color: #1e293b !important;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .icon-primary { 
+        background: rgba(99, 102, 241, 0.1); 
+        color: #6366f1; 
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+</style>
+
+<script>
+    // Add light class to form controls
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            control.classList.add('form-control-light');
+        });
+    });
+</script>
+{% endblock %}

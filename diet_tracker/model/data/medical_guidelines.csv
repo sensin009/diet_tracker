@@ -1,0 +1,5 @@
+condition,recommended_foods,foods_to_limit,max_sodium_mg,max_sugar_g,fiber_target_g
+diabetes,"lean_protein,vegetables,whole_grains,beans,nuts,fish","sugar,white_bread,white_rice,sugary_drinks,candy,pastries",2300,25,30
+hypertension,"fruits,vegetables,whole_grains,low_fat_dairy,fish,poultry","salt,processed_foods,canned_soups,pickles,chips,soy_sauce",1500,30,35
+heart_disease,"fish,vegetables,fruits,whole_grains,nuts,olive_oil,lean_meats","saturated_fats,trans_fats,red_meat,fried_foods,butter,processed_meats",1500,30,35
+none,balanced_variety_of_all_food_groups,"excessive_junk_food,excessive_sugar",2300,50,25

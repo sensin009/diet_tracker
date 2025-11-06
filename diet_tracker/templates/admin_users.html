@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="gradient-text mb-2">User Management</h1>
+        <p class="text-dark">View, edit, and manage all registered users</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="glass-card p-4 mb-4">
+    <form method="get" action="{{ url_for('admin_users') }}">
+        <div class="input-group input-group-lg">
+            <span class="input-group-text bg-primary text-white">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" class="form-control form-control-light" name="q" placeholder="Search by username or email…" value="{{ q or '' }}">
+            <button class="btn btn-gradient" type="submit">
+                <i class="fas fa-search me-2"></i>Search
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Users Table -->
+<div class="glass-card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr class="glass-card">
+                    <th class="gradient-text"><i class="fas fa-hashtag me-2"></i>ID</th>
+                    <th class="gradient-text"><i class="fas fa-user me-2"></i>Username</th>
+                    <th class="gradient-text"><i class="fas fa-envelope me-2"></i>Email</th>
+                    <th class="gradient-text"><i class="fas fa-birthday-cake me-2"></i>Age</th>
+                    <th class="gradient-text"><i class="fas fa-weight me-2"></i>Weight</th>
+                    <th class="gradient-text"><i class="fas fa-fire me-2"></i>TDEE</th>
+                    <th class="gradient-text text-end"><i class="fas fa-cogs me-2"></i>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr class="glass-card">
+                    <td><strong class="text-primary">{{ u.id }}</strong></td>
+                    <td>
+                        <strong class="text-dark">{{ u.username }}</strong><br>
+                        <small class="text-dark">
+                            <i class="fas fa-{% if u.gender == 'male' %}mars text-primary{% else %}venus text-danger{% endif %} me-1"></i>
+                            {{ u.gender|capitalize }}
+                        </small>
+                    </td>
+                    <td class="text-dark">{{ u.email }}</td>
+                    <td class="text-dark">{{ u.age }} yrs</td>
+                    <td class="text-dark">{{ u.weight }} kg</td>
+                    <td><span class="fw-bold text-success">{{ u.tdee|int }}</span> kcal</td>
+                    <td class="text-end">
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('admin_view_user', user_id=u.id) }}" class="btn btn-sm btn-primary" title="View details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ url_for('admin_edit_user', user_id=u.id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ url_for('admin_delete_user', user_id=u.id) }}" method="post" class="d-inline" 
+                                  onsubmit="return confirm('Delete {{ u.username }} and all their intakes?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 glass-card">
+                        <div class="feature-icon icon-warning mx-auto mb-3">
+                            <i class="fas fa-user-slash"></i>
+                        </div>
+                        <h5 class="gradient-text">No Users Found</h5>
+                        <p class="text-dark mb-0">No users match your search criteria.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if pagination.pages > 1 %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link glass-card text-dark" href="{{ url_for('admin_users', page=pagination.prev_num, q=q) }}">
+                <i class="fas fa-chevron-left me-2"></i>Previous
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link glass-card text-dark">Previous</span>
+        </li>
+        {% endif %}
+
+        <li class="page-item disabled">
+            <span class="page-link glass-card text-dark">
+                Page {{ pagination.page }} of {{ pagination.pages }}
+            </span>
+        </li>
+
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link glass-card text-dark" href="{{ url_for('admin_users', page=pagination.next_num, q=q) }}">
+                Next<i class="fas fa-chevron-right ms-2"></i>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link glass-card text-dark">Next</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Summary Cards -->
+<div class="row mt-4 g-3">
+    <div class="col-md-4">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+            <h3 class="mb-0 text-white">{{ pagination.total }}</h3>
+            <small class="text-white">Total Users</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="glass-card p-4 text-center">
+            <a href="{{ url_for('admin_export_users') }}" class="btn btn-gradient w-100">
+                <i class="fas fa-download me-2"></i>Export All Users
+            </a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+            <h3 class="mb-0 text-white">{{ pagination.page }}</h3>
+            <small class="text-white">Current Page</small>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        color: #1e293b !important;
+    }
+    
+    .text-dark {
+        color: #1e293b !important;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .icon-warning { 
+        background: rgba(245, 158, 11, 0.1); 
+        color: #f59e0b; 
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+    
+    .stat-card {
+        color: white;
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+    
+    .form-control-light {
+        background: #ffffff !important;
+        border: 1px solid #dee2e6 !important;
+        color: #1e293b !important;
+        border-radius: var(--radius);
+    }
+    
+    .form-control-light:focus {
+        background: #ffffff !important;
+        border-color: #6366f1 !important;
+        color: #1e293b !important;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important;
+    }
+    
+    .form-control-light::placeholder {
+        color: #6b7280 !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="q"]');
+        if (searchInput) {
+            searchInput.classList.add('form-control-light');
+        }
+    });
+</script>
+{% endblock %}
